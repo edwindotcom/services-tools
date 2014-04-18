@@ -1,7 +1,7 @@
 // usage: phantomjs loadPage.js
 // "use strict";
 
-var page = require('webpage'),
+var page = require('webpage').create(),
     system = require('system'),
     env = system.env,
     args = system.args;
@@ -32,37 +32,33 @@ function waitFor(testFx, onReady, timeOutMillis) {
     }, 250); //< repeat check every 250ms
 }
 
-function loadPage(address, headers){
-  page = require('webpage').create(),
-  // page.settings.userAgent = "User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.101 Safari/537.11";
-  page.customHeaders = headers;
+function loadPage(address, lang){
+  page.customHeaders = {'accept-language': lang};
   page.open(address, function (status) {
     if (status !== 'success') {
       console.log('FAIL to load the address');
     } else {
-      // console.log(page.content);
-        waitFor(function() {
-          // Check in the page if a specific element is now visible
-          return page.evaluate(function() {
-            return $(document.getElementsByClassName('sign-up')).is(":visible");
+      waitFor(function() {
+        // Check in the page if a specific element is now visible
+        return page.evaluate(function() {
+          return $(document.getElementsByClassName('sign-up')).is(":visible");
+        });
+      }, function() {
+          var data = page.evaluate(function () {
+            var p = document.getElementsByClassName("privacy-links");
+            var fxa = document.getElementById("fxa-signup-header").innerHTML;
+            return {"title":document.title,
+                    "privacy-links": p[0].textContent.trim(),
+                    "fxa-signup-header": fxa};
           });
-        }, function() {
-            var data = page.evaluate(function () {
-              var p = document.getElementsByClassName("privacy-links");
-              priv = p[0].textContent;
-              var fxa = document.getElementById("fxa-signup-header").innerHTML;
-              // fxa = fxa[0].textContent;
-              return {"title":document.title,
-                  "privacy-links": priv,
-                  "fxa-signup-header": fxa};
-            });
-          console.log(JSON.stringify(data));
-          phantom.exit();
-          // page.render('fxa-signup.png');
+        console.log('accept-language:'+lang);
+        console.log(JSON.stringify(data));
+        phantom.exit();
+        // page.render('fxa-signup.png');
         });
     }
   });
 }
 
-loadPage(url, {'accept-language': lang});
+loadPage(url, lang);
 
