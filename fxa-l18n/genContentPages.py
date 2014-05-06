@@ -1,0 +1,43 @@
+langs = [ "ca",
+          "cs",
+          "cy",
+          "da",
+          "de",
+          "en-US",
+          "es",
+          "es-CL",
+          "et",
+          "eu",
+          "fr",
+          "fy",
+          "he",
+          "hu",
+          "id",
+          "it",
+          "ja",
+          "ko",
+          "lt",
+          "nb-NO",
+          "nl",
+          "pa",
+          "pl",
+          "pt",
+          "pt-BR",
+          "rm",
+          "ru",
+          "sk",
+          "sl",
+          "sq",
+          "sr",
+          "sr-LATN",
+          "sv",
+          "tr",
+          "zh-CN",
+          "zh-TW",
+          "xx"]
+
+print '#!/bin/sh'
+print
+
+for lang in langs:
+    print "node_modules/phantomjs/bin/phantomjs fxa-l18n/page-scrape/loadPage.js %s" % lang
