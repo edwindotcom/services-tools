@@ -35,7 +35,7 @@ function waitFor(testFx, onReady, timeOutMillis) {
 
 function loadPage(address, lang){
   page.customHeaders = {'accept-language': lang};
-  page.viewportSize = { width: 440, height: 640 };
+  page.viewportSize = { width: 520, height: 500 };
   page.open(address, function (status) {
     if (status !== 'success') {
       console.log('FAIL to load the address');
