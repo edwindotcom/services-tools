@@ -13,10 +13,18 @@ import os
 import sys
 
 chosen_browsers = [
-    # ('Windows 7', 'chrome', '34', ''),
-    # ('OS X 10.8', 'chrome', '34', ''),
-    # ('Linux', 'chrome', '34', ''),
-    ('linux', 'android', '4', 'Android Emulator'),
+    ('Windows 7', 'chrome', '34', ''),
+    ('OS X 10.8', 'chrome', '34', ''),
+    ('Linux', 'chrome', '34', ''),
+
+    ('Windows 7', 'firefox', '29', ''),
+    ('Windows 8', 'chrome', '34', ''),
+    ('Windows 8', 'firefox', '29', ''),
+    ('OS X 10.9', 'firefox', '28', ''),
+    ('Linux', 'firefox', '29', ''),
+    # ('OS X 10.8', 'safari', '6', ''),
+
+    # ('linux', 'android', '4', 'Android Emulator'),
     # ('OS X 10.8', '', '6', 'iPhone Simulator'),
 ]
 
@@ -34,6 +42,7 @@ btn_submit = "submit-btn"
 
 fxa_user = 'fxa.test.acct@restmail.net'
 fxa_password = '12345678'
+
 
 class FxaOAuthTest(unittest.TestCase):
     # Nose won't run the original Test Class, we'll change this in the
@@ -54,7 +63,7 @@ class FxaOAuthTest(unittest.TestCase):
         self.driver = webdriver.Remote(desired_capabilities=des_caps,
                                        command_executor="http://%s:%s@ondemand.saucelabs.com:80/wd/hub"
                                        % (user, key))
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
 
     def _exc_info(self):
         """Return a version of sys.exc_info() with the traceback frame
@@ -62,10 +71,6 @@ class FxaOAuthTest(unittest.TestCase):
            needed.
         """
         return sys.exc_info()
-
-    # def test_basic_page(self):
-    #     self.driver.get("http://saucelabs.com/about/team")
-    #     assert 'Sauce' in self.driver.title
 
     def test_return_oauth(self):
         self.driver.get(OAUTH_RP)
