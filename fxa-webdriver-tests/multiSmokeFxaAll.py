@@ -138,7 +138,7 @@ class FxaTest(unittest.TestCase):
                 'browserName': self.br,
                 'version': self.version,
                 'name': self.name,
-                # "selenium-version": "2.41.0"
+                # "selenium-version": "2.42.0"
                 }
         # instantiate the browser
         self.driver = webdriver.Remote(desired_capabilities=des_caps,
