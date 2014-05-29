@@ -18,12 +18,15 @@ chosen_browsers = [
 
     ('Windows 7', 'chrome', '34'),
     ('OS X 10.8', 'chrome', '34'),
-    # ('Linux', 'chrome', '34'),
+    ('Linux', 'chrome', '28'),
 
     ('Windows 7', 'firefox', '29'),
     ('Windows 8', 'chrome', '34'),
     ('Windows 8', 'firefox', '29'),
     ('Windows 8', 'internet explorer', '10'),
+    ('Windows 8.1', 'internet explorer', '11'),
+    ('Windows 7', 'internet explorer', '11'),
+    ('Windows 7', 'internet explorer', '10'),
     ('OS X 10.9', 'firefox', '28'),
     ('Linux', 'firefox', '29'),
     ('OS X 10.9', 'safari', '7'),
@@ -91,16 +94,13 @@ class FxaTest(unittest.TestCase):
 
         # print self.driver.current_url
 
-        # TODO: Need https in my awsbox instance
         while(self.driver.current_url == FXA):
             # print 'wait', self.driver.current_url
             time.sleep(3)
 
-        # signed_in = self.driver.find_element_by_css_selector(signed_in_locator)
         signout_link = self.driver.find_element_by_id('signout')
 
         signed_in_node = self.driver.find_element_by_css_selector(signed_in_locator)
-        # print 'signed_in_node', signed_in_node.get_attribute("innerHTML")
         assert("Sign out" in signout_link.get_attribute("innerHTML"))
         assert(fxa_user in signed_in_node.get_attribute("innerHTML"))
 
@@ -121,7 +121,6 @@ class FxaTest(unittest.TestCase):
         self.report_pass_fail()
         self.driver.quit()
 
-# Here's where the magic happens
 classes = {}
 for os, browser, version in chosen_browsers:
     # Make a new class name for the actual test cases
@@ -147,8 +146,6 @@ for os, browser, version in chosen_browsers:
     # append the new class to the classes dict
     classes[name] = new.classobj(name, (FxaTest,), d)
 
-# update the global context (believe it or not, it's a dict), with the new
-# classes we just dynamically generated
 globals().update(classes)
 
 # this is just handy. If __main__, just run the tests in multiple processes
