@@ -146,9 +146,14 @@ signed_in_text = 'You are signed in as'
 coppa_locator = 'fxa-age-year'
 delete_locator = 'delete-account'
 
-# fxa_new_user = 'foo123@restmail.net'
+old_pw_locator = 'old_password'
+new_pw_locator = 'new_password'
+change_pw_locator = 'change-password'
+anon_btn_locator = "//button[@type='submit']"
+
 fxa_new_user = "%s%s.%s@restmail.net" % ('fxa.test.', int(time.time()), random.randrange(1000))
 fxa_password = '12345678'
+fxa_new_password = '87654321'
 
 
 class FxaTest(unittest.TestCase):
@@ -186,6 +191,7 @@ class FxaTest(unittest.TestCase):
         return True
 
     def test_1_fxa_signup(self):
+        '''FullFlow1:Creates a new account, verify email'''
         self.driver.get(FXA_SIGNUP)
         time.sleep(2)
         assert 'Create' in self.driver.title
@@ -199,7 +205,6 @@ class FxaTest(unittest.TestCase):
         selectBox = Select(self.driver.find_element_by_id(coppa_locator))
         time.sleep(2)
         selectBox.select_by_visible_text("1991")
-        # selectBox.selectByValue('1991');
 
         self.driver.find_element_by_id(btn_submit).click()
 
@@ -214,6 +219,7 @@ class FxaTest(unittest.TestCase):
         assert 'verified' in self.driver.title
 
     def test_2_fxa_signin(self):
+        '''FullFlow2:signin, change password, delete account'''
         self.driver.get(FXA_SIGNIN)
         time.sleep(2)
         assert 'Sign in' in self.driver.title
@@ -233,22 +239,26 @@ class FxaTest(unittest.TestCase):
         assert("Sign out" in signout_link.get_attribute("innerHTML"))
         assert(fxa_new_user in signed_in_node.get_attribute("innerHTML"))
 
+        # Change password
+        self.driver.find_element_by_id(change_pw_locator).click()
+        self.wait_page_load(FXA_SETTINGS)
+        old_pw = self.driver.find_element_by_id(old_pw_locator)
+        old_pw.send_keys(fxa_password)
+        new_pw = self.driver.find_element_by_id(new_pw_locator)
+        new_pw.send_keys(fxa_new_password)
+        self.driver.find_element_by_xpath(anon_btn_locator).click()
+
         # Delete acct
         self.driver.find_element_by_id(delete_locator).click()
         self.wait_page_load(FXA_SETTINGS)
 
         delete_pw = self.driver.find_element_by_css_selector(input_password)
-        delete_pw.send_keys(fxa_password)
+        delete_pw.send_keys(fxa_new_password)
 
-        self.driver.find_element_by_xpath("//button[@type='submit']").click()
+        self.driver.find_element_by_xpath(anon_btn_locator).click()
         self.wait_page_load(FXA_DELETE)
 
         assert 'Create' in self.driver.title
-
-
-    # def test_registration_login_flow(self):
-    #     self._test_fxa_signup()
-    #     self._test_fxa_signin()
 
     def report_pass_fail(self):
         # Sauce doesn't really know what the test in your end does with the
