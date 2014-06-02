@@ -20,11 +20,10 @@ import sys
 import time
 from utils import getRestmailLink
 import random
-import string
 
 chosen_browsers = [
     # ('MAC', 'firefox', '')
-    # ('Windows 8.1', 'iexplore', '11'),
+    ('Windows 8.1', 'iexplore', '11'),
     # ('Windows 8.1', 'firefox', '26'),
     # ('Windows 8.1', 'firefox', '27'),
     # ('Windows 8.1', 'firefox', '28'),
@@ -39,7 +38,7 @@ chosen_browsers = [
     # ('Windows 8.1', 'chrome', '34'),
     # ('Windows 8.1', 'chrome', 'beta'),
 
-    # ('Windows 8', 'iexplore', '10'),
+    ('Windows 8', 'iexplore', '10'),
     # ('Windows 8', 'firefox', '26'),
     # ('Windows 8', 'firefox', '27'),
     # ('Windows 8', 'firefox', '28'),
@@ -54,52 +53,52 @@ chosen_browsers = [
     # ('Windows 8', 'chrome', '34'),
     # ('Windows 8', 'chrome', 'beta'),
 
-    ('Windows 7', 'iexplore', '9'),
-    ('Windows 7', 'iexplore', '8'),
-    ('Windows 7', 'opera', '11'),
-    ('Windows 7', 'opera', '12'),
-    ('Windows 7', 'iexplore', '10'),
-    ('Windows 7', 'firefox', '26'),
-    ('Windows 7', 'firefox', '27'),
-    ('Windows 7', 'firefox', '28'),
-    ('Windows 7', 'firefox', '29'),
-    ('Windows 7', 'chrome', '27'),
-    ('Windows 7', 'chrome', '28'),
-    ('Windows 7', 'chrome', '29'),
-    ('Windows 7', 'chrome', '30'),
-    ('Windows 7', 'chrome', '31'),
-    ('Windows 7', 'chrome', '32'),
-    ('Windows 7', 'chrome', '33'),
-    ('Windows 7', 'chrome', '34'),
-    ('Windows 7', 'chrome', 'beta'),
-    ('Windows 7', 'iexplore', '11'),
+    # ('Windows 7', 'iexplore', '9'),
+    # ('Windows 7', 'iexplore', '8'),
+    # ('Windows 7', 'opera', '11'),
+    # ('Windows 7', 'opera', '12'),
+    # ('Windows 7', 'iexplore', '10'),
+    # ('Windows 7', 'firefox', '26'),
+    # ('Windows 7', 'firefox', '27'),
+    # ('Windows 7', 'firefox', '28'),
+    # ('Windows 7', 'firefox', '29'),
+    # ('Windows 7', 'chrome', '27'),
+    # ('Windows 7', 'chrome', '28'),
+    # ('Windows 7', 'chrome', '29'),
+    # ('Windows 7', 'chrome', '30'),
+    # ('Windows 7', 'chrome', '31'),
+    # ('Windows 7', 'chrome', '32'),
+    # ('Windows 7', 'chrome', '33'),
+    # ('Windows 7', 'chrome', '34'),
+    # ('Windows 7', 'chrome', 'beta'),
+    # ('Windows 7', 'iexplore', '11'),
 
-    #Mac
-    ('OS X 10.8', 'safari', '6'),
-    ('OS X 10.8', 'chrome', '27'),
-    ('OS X 10.8', 'chrome', '28'),
-    ('OS X 10.8', 'chrome', '31'),
-    ('OS X 10.8', 'chrome', '32'),
-    ('OS X 10.8', 'chrome', '33'),
-    ('OS X 10.8', 'chrome', '34'),
-    ('OS X 10.8', 'chrome', 'beta'),
-    ('OS X 10.9', 'firefox', '26'),
-    ('OS X 10.9', 'firefox', '27'),
-    ('OS X 10.9', 'firefox', '28'),
-    ('OS X 10.9', 'safari', '7'),
-    ('OS X 10.9', 'chrome', '31'),
-    ('OS X 10.9', 'chrome', '32'),
-    ('OS X 10.9', 'chrome', '33'),
-    ('OS X 10.9', 'chrome', '34'),
+    # #Mac
+    # ('OS X 10.8', 'safari', '6'),
+    # ('OS X 10.8', 'chrome', '27'),
+    # ('OS X 10.8', 'chrome', '28'),
+    # ('OS X 10.8', 'chrome', '31'),
+    # ('OS X 10.8', 'chrome', '32'),
+    # ('OS X 10.8', 'chrome', '33'),
+    # ('OS X 10.8', 'chrome', '34'),
+    # ('OS X 10.8', 'chrome', 'beta'),
+    # ('OS X 10.9', 'firefox', '26'),
+    # ('OS X 10.9', 'firefox', '27'),
+    # ('OS X 10.9', 'firefox', '28'),
+    # ('OS X 10.9', 'safari', '7'),
+    # ('OS X 10.9', 'chrome', '31'),
+    # ('OS X 10.9', 'chrome', '32'),
+    # ('OS X 10.9', 'chrome', '33'),
+    # ('OS X 10.9', 'chrome', '34'),
 
-    #Linux
-    ('Linux', 'opera', '12'),
-    ('Linux', 'firefox', '26'),
-    ('Linux', 'firefox', '27'),
-    ('Linux', 'firefox', '28'),
-    ('Linux', 'firefox', '29'),
-    ('Linux', 'chrome', '27'),
-    ('Linux', 'chrome', '28'),
+    # #Linux
+    # ('Linux', 'opera', '12'),
+    # ('Linux', 'firefox', '26'),
+    # ('Linux', 'firefox', '27'),
+    # ('Linux', 'firefox', '28'),
+    # ('Linux', 'firefox', '29'),
+    # ('Linux', 'chrome', '27'),
+    # ('Linux', 'chrome', '28'),
     # #Known Failures
     # #('Linux', 'chrome', '29'),
     # #('Linux', 'chrome', '30'),
@@ -109,10 +108,10 @@ chosen_browsers = [
     # #('Linux', 'chrome', '34'),
 
     #mobile - android
-    ('Linux', 'android', '4.3'),
-    ('Linux', 'android', '4.2'),
-    ('Linux', 'android', '4.1'),
-    ('Linux', 'android', '4.0'),
+    # ('Linux', 'android', '4.3'),
+    # ('Linux', 'android', '4.2'),
+    # ('Linux', 'android', '4.1'),
+    # ('Linux', 'android', '4.0'),
     #mobile -iOS - 6.1,7.0 are failing
     # ('OS X 10.8', 'iphone', '6.0'),
     # ('OS X 10.8', 'ipad', '6.0'),
@@ -127,6 +126,9 @@ chosen_browsers = [
 
 user = os.environ.get('PERSONA_SAUCE_USER')
 key = os.environ.get('PERSONA_SAUCE_APIKEY')
+
+OAUTH_RP = "https://123done.dev.lcip.org"
+OAUTH_SIGNIN = "oauth-ui.dev.lcip.org"
 
 FXA_ROOT = os.getenv('PUBLIC_URL', "https://accounts.stage.mozaws.net/")
 if FXA_ROOT[-1:] != '/':
@@ -153,7 +155,9 @@ old_pw_locator = 'old_password'
 new_pw_locator = 'new_password'
 change_pw_locator = 'change-password'
 anon_btn_locator = "//button[@type=\"submit\"]"
+oauth_user_locator = 'loggedin'
 
+fxa_user = 'fxa.test.acct@restmail.net'
 fxa_password = '12345678'
 fxa_new_password = '87654321'
 
@@ -188,95 +192,32 @@ class FxaTest(unittest.TestCase):
         return sys.exc_info()
 
     def wait_page_load(self, current_url):
-        while(self.driver.current_url == current_url):
+        while(current_url in self.driver.current_url):
             # print 'wait', self.driver.current_url
             time.sleep(3)
         return True
 
-    def _test_fxa_signup(self):
-        '''FullFlow1:create, signout - %s %s %s''' % \
-        (self.os, self.br, self.version)
-
-        self.driver.get(FXA_SIGNUP)
-        time.sleep(2)
-        assert 'Create' in self.driver.title
-
-        username = self.driver.find_element_by_css_selector(input_email)
-        username.send_keys(self.fxa_new_user)
-        time.sleep(2)
-        pw = self.driver.find_element_by_css_selector(input_password)
-        pw.send_keys(fxa_password)
-
-        selectBox = Select(self.driver.find_element_by_id(coppa_locator))
-        time.sleep(2)
-        selectBox.select_by_visible_text("1991")
-
-        self.driver.find_element_by_id(btn_submit).click()
-
-        self.wait_page_load(FXA_SIGNUP)
-        assert 'Confirm your account' in self.driver.title
-
-        # verify restmail user
-        time.sleep(4)
-        restmail_link = getRestmailLink(self.fxa_new_user)
-        self.driver.get(restmail_link)
-        time.sleep(2)
-        assert 'verified' in self.driver.title
-
-    def _test_fxa_signin(self):
+    def test_fxa_oauth(self):
         '''FullFlow2:signin, change pw, delete - %s %s %s''' % \
         (self.os, self.br, self.version)
 
-        assert self.fxa_new_user != ""
-        self.driver.get(FXA_SIGNIN)
-        time.sleep(2)
-        assert 'Sign in' in self.driver.title
+        self.driver.get(OAUTH_RP)
+        assert '123 Done' in self.driver.title
+        self.driver.find_element_by_css_selector(btn_signin_locator).click()
 
+        self.wait_page_load(OAUTH_RP)
+        assert 'Accounts' in self.driver.title
+        time.sleep(3)
         username = self.driver.find_element_by_css_selector(input_email)
-        username.send_keys(self.fxa_new_user)
-        time.sleep(2)
+        username.send_keys(fxa_user)
+        self.assertTrue('Sign in to 123done' in self.driver.title)
         pw = self.driver.find_element_by_css_selector(input_password)
         pw.send_keys(fxa_password)
         self.driver.find_element_by_id(btn_submit).click()
+        self.wait_page_load(OAUTH_SIGNIN)
 
-        self.wait_page_load(FXA_SIGNIN)
-
-        signout_link = self.driver.find_element_by_id('signout')
-
-        signed_in_node = self.driver.find_element_by_css_selector(signed_in_locator)
-        assert("Sign out" in signout_link.get_attribute("innerHTML"))
-        assert(self.fxa_new_user in signed_in_node.get_attribute("innerHTML"))
-
-        # Change password
-        self.driver.find_element_by_id(change_pw_locator).click()
-        self.wait_page_load(FXA_SETTINGS)
-        time.sleep(2)
-        old_pw = self.driver.find_element_by_id(old_pw_locator)
-        old_pw.send_keys(fxa_password)
-        new_pw = self.driver.find_element_by_id(new_pw_locator)
-        new_pw.send_keys(fxa_new_password)
-        self.driver.find_element_by_xpath(anon_btn_locator).click()
-        self.wait_page_load(FXA_CHANGE_PW)
-        assert 'Manage' in self.driver.title
-
-        # Delete acct
-        self.driver.find_element_by_id(delete_locator).click()
-        self.wait_page_load(FXA_SETTINGS)
-
-        delete_pw = self.driver.find_element_by_css_selector(input_password)
-        delete_pw.send_keys(fxa_new_password)
-
-        self.driver.find_element_by_xpath(anon_btn_locator).click()
-        self.wait_page_load(FXA_DELETE)
-
-        assert 'Create' in self.driver.title
-
-    def test_fxa(self):
-        rnd = ''.join([random.choice(string.digits) for i in range(3)])
-        self.fxa_new_user = "%s.%s.%s@restmail.net" % ('fxa.test', int(time.time()), rnd)
-
-        self._test_fxa_signup()
-        self._test_fxa_signin()
+        oauth_user = self.driver.find_element_by_id(oauth_user_locator)
+        assert(fxa_user in oauth_user.get_attribute("innerHTML"))
 
     def report_pass_fail(self):
         # Sauce doesn't really know what the test in your end does with the
