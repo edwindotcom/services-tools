@@ -20,9 +20,11 @@ import sys
 import time
 from utils import getRestmailLink
 import random
+import string
 
 chosen_browsers = [
-    # ('Windows 8.1', 'iexplore', '11'),
+    # ('MAC', 'firefox', '')
+    ('Windows 8.1', 'iexplore', '11'),
     # ('Windows 8.1', 'firefox', '26'),
     # ('Windows 8.1', 'firefox', '27'),
     # ('Windows 8.1', 'firefox', '28'),
@@ -41,7 +43,7 @@ chosen_browsers = [
     # ('Windows 8', 'firefox', '26'),
     # ('Windows 8', 'firefox', '27'),
     # ('Windows 8', 'firefox', '28'),
-    # ('Windows 8', 'firefox', '29'),
+    ('Windows 8', 'firefox', '29'),
     # ('Windows 8', 'chrome', '27'),
     # ('Windows 8', 'chrome', '28'),
     # ('Windows 8', 'chrome', '29'),
@@ -49,7 +51,7 @@ chosen_browsers = [
     # ('Windows 8', 'chrome', '31'),
     # ('Windows 8', 'chrome', '32'),
     # ('Windows 8', 'chrome', '33'),
-    # ('Windows 8', 'chrome', '34'),
+    ('Windows 8', 'chrome', '34'),
     # ('Windows 8', 'chrome', 'beta'),
 
     # ('Windows 7', 'iexplore', '9'),
@@ -60,7 +62,7 @@ chosen_browsers = [
     # ('Windows 7', 'firefox', '26'),
     # ('Windows 7', 'firefox', '27'),
     # ('Windows 7', 'firefox', '28'),
-    ('Windows 7', 'firefox', '29'),
+    # ('Windows 7', 'firefox', '29'),
     # ('Windows 7', 'chrome', '27'),
     # ('Windows 7', 'chrome', '28'),
     # ('Windows 7', 'chrome', '29'),
@@ -149,9 +151,11 @@ delete_locator = 'delete-account'
 old_pw_locator = 'old_password'
 new_pw_locator = 'new_password'
 change_pw_locator = 'change-password'
-anon_btn_locator = "//button[@type='submit']"
+anon_btn_locator = "//button[@type=\"submit\"]"
 
-fxa_new_user = "%s%s.%s@restmail.net" % ('fxa.test.', int(time.time()), random.randrange(1000))
+
+rnd = ''.join([random.choice(string.digits) for i in range(32)])
+fxa_new_user = "%s.%s@restmail.net" % ('fxa.test.', rnd)
 fxa_password = '12345678'
 fxa_new_password = '87654321'
 
@@ -172,8 +176,8 @@ class FxaTest(unittest.TestCase):
                 }
         # instantiate the browser
         self.driver = webdriver.Remote(desired_capabilities=des_caps,
-                                       command_executor="http://%s:%s@ondemand.saucelabs.com:80/wd/hub"
                                        # command_executor='http://127.0.0.1:4444/wd/hub')
+                                       command_executor="http://%s:%s@ondemand.saucelabs.com:80/wd/hub"
                                        % (user, key))
         self.driver.implicitly_wait(60)
 
@@ -190,75 +194,81 @@ class FxaTest(unittest.TestCase):
             time.sleep(3)
         return True
 
-    def test_1_fxa_signup(self):
-        '''FullFlow1:Creates a new account, verify email'''
-        self.driver.get(FXA_SIGNUP)
-        time.sleep(2)
-        assert 'Create' in self.driver.title
+    def test_user(self):
+        print fxa_new_user
 
-        username = self.driver.find_element_by_css_selector(input_email)
-        username.send_keys(fxa_new_user)
-        time.sleep(2)
-        pw = self.driver.find_element_by_css_selector(input_password)
-        pw.send_keys(fxa_password)
+    # def test_1_fxa_signup(self):
+    #     '''FullFlow1:create, signout - %s %s %s''' % \
+    #     (self.os, self.br, self.version)
+    #     self.driver.get(FXA_SIGNUP)
+    #     time.sleep(2)
+    #     assert 'Create' in self.driver.title
 
-        selectBox = Select(self.driver.find_element_by_id(coppa_locator))
-        time.sleep(2)
-        selectBox.select_by_visible_text("1991")
+    #     username = self.driver.find_element_by_css_selector(input_email)
+    #     username.send_keys(fxa_new_user)
+    #     time.sleep(2)
+    #     pw = self.driver.find_element_by_css_selector(input_password)
+    #     pw.send_keys(fxa_password)
 
-        self.driver.find_element_by_id(btn_submit).click()
+    #     selectBox = Select(self.driver.find_element_by_id(coppa_locator))
+    #     time.sleep(2)
+    #     selectBox.select_by_visible_text("1991")
 
-        self.wait_page_load(FXA_SIGNUP)
-        assert 'Confirm your account' in self.driver.title
+    #     self.driver.find_element_by_id(btn_submit).click()
 
-        # verify restmail user
-        time.sleep(4)
-        restmail_link = getRestmailLink(fxa_new_user)
-        self.driver.get(restmail_link)
-        time.sleep(2)
-        assert 'verified' in self.driver.title
+    #     self.wait_page_load(FXA_SIGNUP)
+    #     assert 'Confirm your account' in self.driver.title
 
-    def test_2_fxa_signin(self):
-        '''FullFlow2:signin, change password, delete account'''
-        self.driver.get(FXA_SIGNIN)
-        time.sleep(2)
-        assert 'Sign in' in self.driver.title
+    #     # verify restmail user
+    #     time.sleep(4)
+    #     restmail_link = getRestmailLink(fxa_new_user)
+    #     self.driver.get(restmail_link)
+    #     time.sleep(2)
+    #     assert 'verified' in self.driver.title
 
-        username = self.driver.find_element_by_css_selector(input_email)
-        username.send_keys(fxa_new_user)
-        time.sleep(2)
-        pw = self.driver.find_element_by_css_selector(input_password)
-        pw.send_keys(fxa_password)
-        self.driver.find_element_by_id(btn_submit).click()
+    # def test_2_fxa_signin(self):
+    #     '''FullFlow2:signin, change pw, delete - %s %s %s''' % \
+    #     (self.os, self.br, self.version)
+    #     self.driver.get(FXA_SIGNIN)
+    #     time.sleep(2)
+    #     assert 'Sign in' in self.driver.title
 
-        self.wait_page_load(FXA_SIGNIN)
+    #     username = self.driver.find_element_by_css_selector(input_email)
+    #     username.send_keys(fxa_new_user)
+    #     time.sleep(2)
+    #     pw = self.driver.find_element_by_css_selector(input_password)
+    #     pw.send_keys(fxa_password)
+    #     self.driver.find_element_by_id(btn_submit).click()
 
-        signout_link = self.driver.find_element_by_id('signout')
+    #     self.wait_page_load(FXA_SIGNIN)
 
-        signed_in_node = self.driver.find_element_by_css_selector(signed_in_locator)
-        assert("Sign out" in signout_link.get_attribute("innerHTML"))
-        assert(fxa_new_user in signed_in_node.get_attribute("innerHTML"))
+    #     signout_link = self.driver.find_element_by_id('signout')
 
-        # Change password
-        self.driver.find_element_by_id(change_pw_locator).click()
-        self.wait_page_load(FXA_SETTINGS)
-        old_pw = self.driver.find_element_by_id(old_pw_locator)
-        old_pw.send_keys(fxa_password)
-        new_pw = self.driver.find_element_by_id(new_pw_locator)
-        new_pw.send_keys(fxa_new_password)
-        self.driver.find_element_by_xpath(anon_btn_locator).click()
+    #     signed_in_node = self.driver.find_element_by_css_selector(signed_in_locator)
+    #     assert("Sign out" in signout_link.get_attribute("innerHTML"))
+    #     assert(fxa_new_user in signed_in_node.get_attribute("innerHTML"))
 
-        # Delete acct
-        self.driver.find_element_by_id(delete_locator).click()
-        self.wait_page_load(FXA_SETTINGS)
+    #     # Change password
+    #     self.driver.find_element_by_id(change_pw_locator).click()
+    #     self.wait_page_load(FXA_SETTINGS)
+    #     time.sleep(2)
+    #     old_pw = self.driver.find_element_by_id(old_pw_locator)
+    #     old_pw.send_keys(fxa_password)
+    #     new_pw = self.driver.find_element_by_id(new_pw_locator)
+    #     new_pw.send_keys(fxa_new_password)
+    #     self.driver.find_element_by_xpath(anon_btn_locator).click()
 
-        delete_pw = self.driver.find_element_by_css_selector(input_password)
-        delete_pw.send_keys(fxa_new_password)
+    #     # Delete acct
+    #     self.driver.find_element_by_id(delete_locator).click()
+    #     self.wait_page_load(FXA_SETTINGS)
 
-        self.driver.find_element_by_xpath(anon_btn_locator).click()
-        self.wait_page_load(FXA_DELETE)
+    #     delete_pw = self.driver.find_element_by_css_selector(input_password)
+    #     delete_pw.send_keys(fxa_new_password)
 
-        assert 'Create' in self.driver.title
+    #     self.driver.find_element_by_xpath(anon_btn_locator).click()
+    #     self.wait_page_load(FXA_DELETE)
+
+    #     assert 'Create' in self.driver.title
 
     def report_pass_fail(self):
         # Sauce doesn't really know what the test in your end does with the
@@ -278,9 +288,10 @@ class FxaTest(unittest.TestCase):
         self.driver.quit()
 
 classes = {}
-for os_name, browser, version in chosen_browsers:
+for os, browser, version in chosen_browsers:
     # Make a new class name for the actual test cases
-    name = "%s_%s_%s_%s" % (FxaTest.__name__, os_name, browser, version)
+    random.seed(time.time())
+    name = "%s_%s_%s_%s" % (FxaTest.__name__, os, browser, version)
     name = name.encode('ascii')
     if name.endswith("."): name = name[:-1]
     for x in ".-_":
@@ -294,7 +305,7 @@ for os_name, browser, version in chosen_browsers:
               # Set these properties dynamically, the test uses them to
               # instantiate the browser
               'name': name,
-              'os': os_name,
+              'os': os,
               'br': browser,
               'version': version
              })
