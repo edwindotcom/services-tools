@@ -5,13 +5,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from selenium import webdriver
-from selenium.webdriver.support.ui import Select
-import unittest
-import nose
-from nose.plugins.multiprocess import MultiProcess
-from optparse import OptionParser
-
 import new
 import json
 import httplib
@@ -19,12 +12,23 @@ import base64
 import os
 import sys
 import time
-from utils import getRestmailLink
 import random
 import string
+from optparse import OptionParser
 
-platform_types = ['quick', 'acc', 'win8', 'win7', 'mac', 'linux', 'mobile']
-quick = [
+from selenium import webdriver
+from selenium.webdriver.support.ui import Select
+
+import unittest
+import nose
+from nose.plugins.multiprocess import MultiProcess
+
+from utils import getRestmailLink
+
+platform_types = ['one', 'acc', 'win8', 'win7', 'mac', 'linux', 'mobile']
+run_types = ['smoke', 'oauth', 'full']
+
+one = [
     ('Windows 7', 'firefox', '29'),
 ]
 acc = [
@@ -149,6 +153,9 @@ FXA_ROOT = os.getenv('PUBLIC_URL', "https://accounts.stage.mozaws.net/")
 if FXA_ROOT[-1:] != '/':
     FXA_ROOT += "/"
 
+OAUTH_RP = "https://123done.dev.lcip.org"
+OAUTH_SIGNIN = "oauth-ui.dev.lcip.org"
+
 FXA_SIGNIN = FXA_ROOT + 'signin'
 FXA_SIGNUP = FXA_ROOT + 'signup'
 FXA_SETTINGS = FXA_ROOT + 'settings'
@@ -163,6 +170,7 @@ btn_submit = "submit-btn"
 signed_in_locator = "p.signed-in-email-message"
 signed_in_text = 'You are signed in as'
 
+oauth_user_locator = 'loggedin'
 coppa_locator = 'fxa-age-year'
 delete_locator = 'delete-account'
 
@@ -171,6 +179,7 @@ new_pw_locator = 'new_password'
 change_pw_locator = 'change-password'
 anon_btn_locator = "//button[@type=\"submit\"]"
 
+fxa_exist_user = 'fxa.test.acct@restmail.net'
 fxa_password = '12345678'
 fxa_new_password = '87654321'
 
@@ -315,14 +324,39 @@ class FxaTest(unittest.TestCase):
 
         assert 'Create' in self.driver.title
 
+    def _test_fxa_oauth(self):
+        '''FullFlow2:signin, change pw, delete - %s %s %s''' % \
+        (self.os, self.br, self.version)
+
+        self.driver.get(OAUTH_RP)
+        time.sleep(2)
+        assert '123 Done' in self.driver.title
+        self.driver.find_element_by_css_selector(btn_signin_locator).click()
+        time.sleep(3)
+        self.wait_page_load(OAUTH_RP)
+
+        self.assertTrue('Sign in to 123done' in self.driver.title)
+        username = self.driver.find_element_by_css_selector(input_email)
+        username.send_keys(self.fxa_exist_user)
+
+        pw = self.driver.find_element_by_css_selector(input_password)
+        pw.send_keys(fxa_password)
+        self.driver.find_element_by_id(btn_submit).click()
+        self.wait_page_load(OAUTH_SIGNIN)
+        time.sleep(3)
+        oauth_user = self.driver.find_element_by_id(oauth_user_locator)
+        assert(self.fxa_exist_user in oauth_user.get_attribute("innerHTML"))
+
     def test_fxa(self):
-        self.fxa_exist_user = 'fxa.test.acct@restmail.net' # for existing user sign in
+        self.fxa_exist_user = fxa_exist_user
         rnd = ''.join([random.choice(string.digits) for i in range(3)])
         self.fxa_new_user = "%s.%s.%s@restmail.net" % ('fxa.test', int(time.time()), rnd)
 
         if run_type == 'full':
             self._test_fxa_signup()
             self._test_fxa_signin()
+        elif run_type == 'oauth':
+            self._test_fxa_oauth()
         else:
             self._test_fxa_exist_user()
 
@@ -343,13 +377,17 @@ class FxaTest(unittest.TestCase):
         self.report_pass_fail()
         self.driver.quit()
 
-parser = OptionParser(usage="usage: %prog [options] runType{smoke|full}")
+parser = OptionParser(usage="usage: %prog [options] runType {smoke|oauth|full}")
 parser.add_option("-p", "--platforms",
                   help="comma seperated list of platforms to run: %s" % platform_types)
 options, args = parser.parse_args()
 
+if not args:
+    print 'run type not defined: %s' % run_types
+    sys.exit(1)
+
 run_type = 'smoke'
-if args:
+if args[0] in run_types:
     run_type = args[0]
 
 chosen_browsers = []
@@ -358,9 +396,13 @@ if options.platforms:
     for plat in plats:
         if plat in platform_types:
             chosen_browsers.extend(locals()[plat])
+        else:
+            print "%s platform not in: %s" % (plat, platform_types)
+            sys.exit(1)
 else:
-    chosen_browsers = quick
+    chosen_browsers = one
 
+# this is a bit hacky - but nose runs this file more than once to 
 classes = {}
 for os_name, browser, version in chosen_browsers:
     # Make a new class name for the actual test cases
