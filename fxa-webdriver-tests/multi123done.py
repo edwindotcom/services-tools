@@ -144,7 +144,7 @@ FXA_SIGNUP = FXA_ROOT + 'signup'
 FXA_SETTINGS = FXA_ROOT + 'settings'
 FXA_DELETE = FXA_ROOT + 'delete_account'
 FXA_CHANGE_PW = FXA_ROOT + 'change_password'
-FXA_123DONE = "https://123done-stage.dev.lcip.org/"
+FXA_123DONE = os.getenv('FXA_123DONE', "https://123done-stage.dev.lcip.org/")
 
 btn_signin_locator = "button.signin"
 btn_signup_locator = "button.signup"
