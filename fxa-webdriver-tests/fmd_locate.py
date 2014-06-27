@@ -7,11 +7,11 @@
 
 import time
 import os
+import sys
 
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
 
 FXA_ROOT = os.getenv('PUBLIC_URL', "https://accounts.stage.mozaws.net/")
 if FXA_ROOT[-1:] != '/':
@@ -39,9 +39,11 @@ header_locator = 'h1'
 loading_locator = 'h2'
 map_locator = 'leaflet-map-pane'
 
-# fxa_exist_user = 'fxa.test.acct@restmail.net'
-fxa_exist_user = 'ed777@restmail.net'
+fxa_exist_user = 'fxa.test.acct@restmail.net'
+if len(sys.argv) > 1:
+    fxa_exist_user = sys.argv[1]
 
+print fxa_exist_user
 user_name = fxa_exist_user.split('@')[0]
 fxa_password = '12345678'
 
