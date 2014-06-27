@@ -13,10 +13,6 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-FXA_ROOT = os.getenv('PUBLIC_URL', "https://accounts.stage.mozaws.net/")
-if FXA_ROOT[-1:] != '/':
-    FXA_ROOT += "/"
-
 FMD_URL = "https://fmd.stage.mozaws.net"
 OAUTH_SIGNIN = "https://accounts.stage.mozaws.net/oauth/"
 
