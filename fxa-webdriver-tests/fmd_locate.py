@@ -16,12 +16,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 FMD_URL = "https://fmd.stage.mozaws.net"
 OAUTH_SIGNIN = "https://accounts.stage.mozaws.net/oauth/"
 
-FXA_SIGNIN = FXA_ROOT + 'signin'
-FXA_SIGNUP = FXA_ROOT + 'signup'
-FXA_SETTINGS = FXA_ROOT + 'settings'
-FXA_DELETE = FXA_ROOT + 'delete_account'
-FXA_CHANGE_PW = FXA_ROOT + 'change_password'
-
 signin_locator = "Sign in"
 btn_signin_locator = "button.signin"
 btn_signup_locator = "button.signup"
@@ -35,13 +29,17 @@ header_locator = 'h1'
 loading_locator = 'h2'
 map_locator = 'leaflet-map-pane'
 
-fxa_exist_user = 'fxa.test.acct@restmail.net'
-if len(sys.argv) > 1:
-    fxa_exist_user = sys.argv[1]
+# fxa_exist_user = 'fxa.test.acct@restmail.net'
+# fxa_exist_user = 'moztesta@gmail.com'
+fxa_exist_user = 'kilroy_o2bv84@restmail.net'
+
+
+# if len(sys.argv) > 1:
+#     fxa_exist_user = sys.argv[1]
 
 print fxa_exist_user
 user_name = fxa_exist_user.split('@')[0]
-fxa_password = '12345678'
+fxa_password = '123456789'
 
 
 class FMDTest(unittest.TestCase):
@@ -57,6 +55,12 @@ class FMDTest(unittest.TestCase):
             # print 'wait', self.driver.current_url
             time.sleep(3)
         return True
+
+    # def wait_leave_page(self, current_url):
+    #     while(self.driver.current_url == current_url):
+    #         # print 'wait', self.driver.current_url
+    #         time.sleep(3)
+    #     return True
 
     def test_fmd(self):
         # sign into FMD
@@ -85,8 +89,7 @@ class FMDTest(unittest.TestCase):
         time.sleep(60)
 
         fmd_map = self.driver.find_element_by_class_name(map_locator)
-        for item in fmd_map:
-            print item
+        print fmd_map
 
         ## if not found - this should work:
         # loading = self.driver.find_element_by_css_selector(loading_locator)
