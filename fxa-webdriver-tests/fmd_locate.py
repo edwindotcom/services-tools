@@ -36,8 +36,12 @@ signed_in_locator = "p.signed-in-email-message"
 signed_in_text = 'You are signed in as'
 
 header_locator = 'h1'
+loading_locator = 'h2'
+map_locator = 'leaflet-map-pane'
 
-fxa_exist_user = 'fxa.test.acct@restmail.net'
+# fxa_exist_user = 'fxa.test.acct@restmail.net'
+fxa_exist_user = 'ed777@restmail.net'
+
 user_name = fxa_exist_user.split('@')[0]
 fxa_password = '12345678'
 
@@ -77,16 +81,23 @@ class FMDTest(unittest.TestCase):
 
         # should be on finding phone page
         header = self.driver.find_element_by_css_selector(header_locator)
-        print 'header', header.get_attribute("innerHTML")
-        # assert(user_name in header.get_attribute("innerHTML"))
+        # print 'header', header.get_attribute("innerHTML")
+        assert(user_name in header.get_attribute("innerHTML"))
 
-        time.sleep(30)
-        print 'console: You need a fairly recent version of webdriver'
-        for entry in self.driver.get_log('browser'):
-            print entry
+        time.sleep(60)
+
+        fmd_map = self.driver.find_element_by_class_name(map_locator)
+        for item in fmd_map:
+            print item
+
+        ## if not found - this should work:
+        # loading = self.driver.find_element_by_css_selector(loading_locator)
+        # print 'loading', loading.get_attribute("innerHTML")
 
     def tearDown(self):
-        self.driver.quit()
+        # self.driver.quit()
+        # leave the browser open for now
+        pass
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
@@ -99,12 +110,4 @@ if __name__ == '__main__':
 #                   help="option to run against run_local selenium server")
 # options, args = parser.parse_args()
 
-# if not args:
-#     print 'run type not defined: %s' % run_types
-#     sys.exit(1)
-
-# if options.local:
-#     run_local = True
-
-# run_type = 'smoke'
 
