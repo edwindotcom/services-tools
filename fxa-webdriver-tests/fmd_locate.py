@@ -8,6 +8,7 @@
 import time
 import os
 import sys
+from optparse import OptionParser
 
 import unittest
 from selenium import webdriver
@@ -15,6 +16,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 FMD_URL = "https://fmd.stage.mozaws.net"
 OAUTH_SIGNIN = "https://accounts.stage.mozaws.net/oauth/"
+
 
 signin_locator = "Sign in"
 btn_signin_locator = "button.signin"
@@ -29,17 +31,13 @@ header_locator = 'h1'
 loading_locator = 'h2'
 map_locator = 'leaflet-map-pane'
 
+TIMEOUT = os.getenv('FMD_TIMEOUT', 60)
 # fxa_exist_user = 'fxa.test.acct@restmail.net'
-# fxa_exist_user = 'moztesta@gmail.com'
-fxa_exist_user = 'kilroy_o2bv84@restmail.net'
+fxa_exist_user = os.getenv('FXA_USER', 'ed111@restmail.net')
+fxa_password = os.getenv('FXA_PASSWORD', '12345678')
 
-
-# if len(sys.argv) > 1:
-#     fxa_exist_user = sys.argv[1]
-
-print fxa_exist_user
+print fxa_exist_user, fxa_password
 user_name = fxa_exist_user.split('@')[0]
-fxa_password = '123456789'
 
 
 class FMDTest(unittest.TestCase):
@@ -48,19 +46,13 @@ class FMDTest(unittest.TestCase):
         des_caps = {'browserName':'firefox'}
         des_caps['loggingPrefs'] = { 'browser':'ALL' }
         self.driver = webdriver.Remote(desired_capabilities=des_caps)
-        self.driver.implicitly_wait(60)
+        self.driver.implicitly_wait(TIMEOUT)
 
     def wait_leave_page(self, current_url):
         while(self.driver.current_url == current_url):
             # print 'wait', self.driver.current_url
             time.sleep(3)
         return True
-
-    # def wait_leave_page(self, current_url):
-    #     while(self.driver.current_url == current_url):
-    #         # print 'wait', self.driver.current_url
-    #         time.sleep(3)
-    #     return True
 
     def test_fmd(self):
         # sign into FMD
@@ -86,14 +78,13 @@ class FMDTest(unittest.TestCase):
         # print 'header', header.get_attribute("innerHTML")
         assert(user_name in header.get_attribute("innerHTML"))
 
-        time.sleep(60)
-
-        fmd_map = self.driver.find_element_by_class_name(map_locator)
-        print fmd_map
-
-        ## if not found - this should work:
-        # loading = self.driver.find_element_by_css_selector(loading_locator)
-        # print 'loading', loading.get_attribute("innerHTML")
+        # implicit_waits to find element
+        try:
+            fmd_map = self.driver.find_element_by_class_name(map_locator)
+            assert(fmd_map)
+        except:
+            print 'FAIL - unable to find device'
+            sys.exit(1)
 
     def tearDown(self):
         # self.driver.quit()
@@ -103,12 +94,6 @@ class FMDTest(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main(verbosity=2)
 
-# parser = OptionParser(usage="usage: %prog [options] runType {smoke|oauth|full}")
-# parser.add_option("-p", "--platforms",
-#                   help="comma seperated list of platforms to run: %s" % platform_types)
-# parser.add_option("--local",
-#                   action='store_true',
-#                   help="option to run against run_local selenium server")
-# options, args = parser.parse_args()
+
 
 
