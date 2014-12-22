@@ -8,7 +8,6 @@
 import time
 import os
 import sys
-from optparse import OptionParser
 
 import unittest
 from selenium import webdriver
