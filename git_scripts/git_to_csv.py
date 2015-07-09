@@ -19,19 +19,21 @@ GITHUB_USER = os.environ['GIT_API_USER']
 GITHUB_PASSWORD = os.environ['GIT_API_KEY']
 labels_filter = ['waffle:in progress', 'waffle:ready', 'waffle:in review']
 AUTH = (GITHUB_USER, GITHUB_PASSWORD)
+repo = ""
 
 def write_issues(resp):
     "output a list of issues to csv"
     if not resp.status_code == 200:
         raise Exception(resp.status_code)
-    print 'write row'
+
     for issue in resp.json():
         labels = issue['labels']
         for label in labels:
             if label['name'] in labels_filter:
                 milestone = issue['milestone']['title'] if issue['milestone'] is not None else ""
 
-                csvout.writerow([issue['number'],
+                csvout.writerow([repo,
+                                 issue['number'],
                                  issue['title'].encode('utf-8'),
                                  issue['created_at'],
                                  issue['updated_at'],
@@ -44,7 +46,7 @@ def fetch_page(url):
     r = requests.get(url, auth=AUTH)
     print 'fetch:', url
     write_issues(r)
-    orig_url = url
+
     #handle pagination, check if we're on the last page otherwise fetch next page
     if 'link' in r.headers:
         pages = dict(
@@ -52,30 +54,30 @@ def fetch_page(url):
                 [link.split(';') for link in
                     r.headers['link'].split(',')]])
 
-        while 'last' in pages and 'next' in pages:
-            print 'url:.%s.%s.' % (orig_url, pages['last'])
-            # print 'next/last', pages['next'], pages['last']
-            if orig_url == pages['last']:
-                sys.exit()
-            orig_url = pages['next']
-            fetch_page(pages['next'])
+        if 'last' not in pages:
+            return
+
+        fetch_page(pages['next'])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--repo", help = "repo name")
+    parser.add_argument("-r", "--repos", nargs='+', help = "list of repos")
     parser.add_argument("-s", "--status",  help = "status open|closed")
     parser.add_argument("-l", "--labels", nargs='+', help = "space delimited list of label strings")
     args = parser.parse_args()
 
-    repo = args.repo if args.repo is not None else 'mozilla/fxa-auth-server'
+    repos = args.repos if args.repos is not None else ['mozilla/fxa-auth-server']
     status = args.status if args.status is not None else 'open'
     if args.labels is not None:
         labels_filter = args.labels
 
-    csvfile = '%s-issues.csv' % (repo.replace('/', '-'))
-    csvout = csv.writer(open(csvfile, 'wb'))
-    csvout.writerow(('ID', 'Title', 'Created At', 'Updated At', 'State', 'Assignee', 'Milestone', 'Waffle_state'))
-    print repo, status, labels_filter
+    for repo in repos:
+        print 'repo:', repo
+        csvfile = '%s-issues.csv' % (repo.replace('/', '-'))
+        print 'created file:', csvfile
+        csvout = csv.writer(open(csvfile, 'wb'))
+        csvout.writerow(('Repo', 'ID', 'Title', 'Created At', 'Updated At', 'State', 'Assignee', 'Milestone', 'Waffle_state'))
+        print repo, status, labels_filter
 
-    issues_url = 'https://api.github.com/repos/%s/issues?state=%s' % (repo, status)
-    fetch_page(issues_url)
+        issues_url = 'https://api.github.com/repos/%s/issues?state=%s' % (repo, status)
+        fetch_page(issues_url)
