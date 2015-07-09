@@ -24,6 +24,7 @@ def write_issues(resp):
     "output a list of issues to csv"
     if not resp.status_code == 200:
         raise Exception(resp.status_code)
+    print 'write row'
     for issue in resp.json():
         labels = issue['labels']
         for label in labels:
@@ -43,7 +44,7 @@ def fetch_page(url):
     r = requests.get(url, auth=AUTH)
     print 'fetch:', url
     write_issues(r)
-
+    orig_url = url
     #handle pagination, check if we're on the last page otherwise fetch next page
     if 'link' in r.headers:
         pages = dict(
@@ -52,10 +53,11 @@ def fetch_page(url):
                     r.headers['link'].split(',')]])
 
         while 'last' in pages and 'next' in pages:
-            print pages['next'], pages['last']
-            if pages['next'] == pages['last']:
+            print 'url:.%s.%s.' % (orig_url, pages['last'])
+            # print 'next/last', pages['next'], pages['last']
+            if orig_url == pages['last']:
                 sys.exit()
-
+            orig_url = pages['next']
             fetch_page(pages['next'])
 
 if __name__ == '__main__':
