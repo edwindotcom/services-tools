@@ -1,0 +1,49 @@
+<!-- Include the Google CSS package -->
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
+ 
+<!-- You can also include your own CSS styles -->
+<style>
+  form { margin: 40px auto; }
+  input { display:inline-block; margin: 20px; }
+</style>
+ 
+
+<!-- This is the HTML form -->
+<form id="labnol">
+<h1>Activity Stream Screenshot Uploader!</h1>
+<p>Please help the Activity Stream team learn about what you are seeing in your activity stream for Firefox.<br />
+<strong>Uploaded files do not conform to any Mozilla privacy noticies or terms of service</strong></p>
+
+<p>Step 1: Install activity stream: https://testpilot.firefox.com</p>
+<p>Step 2: Browse around for a minute</p>
+<p>Step 3: Open a new tab or window</p>
+<p>Step 4: Take a screen shot of your new tab window. (mac: CMD+4, win: Windows Key and Print Screen key)</p>
+<p>Step 5: Enter a name below, click upload file, browse to screenshot, click upload</p>
+
+  <!-- Text input fields -->
+
+ 
+  <!-- File input filed -->
+  Choose File: <input type="file" name="myFile"><br />
+ 
+  Feedback:<br />
+  <textarea name="myName" rows="4" cols="50"></textarea><br />
+  <!-- The submit button. It calls the server side function uploadfiles() on click -->
+    <input type="submit" value="Upload File" 
+           onclick="this.value='Uploading..';
+                    google.script.run.withSuccessHandler(fileUploaded)
+                    .uploadFiles(this.parentNode);
+                    return false;">
+ 
+</form>
+ 
+<!-- Here the results of the form submission will be displayed -->
+<div id="output"></div>
+
+<script>
+  function fileUploaded(status) {
+    document.getElementById('labnol').style.display = 'none';
+    document.getElementById('output').innerHTML = status;
+  }
+</script>
+ 
