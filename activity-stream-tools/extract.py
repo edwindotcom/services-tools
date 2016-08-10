@@ -1,4 +1,3 @@
-
 import requests
 import json
 import sys
@@ -6,8 +5,7 @@ import time
 
 from pprint import pprint
 
-embedly_proxy = "https://embedly-proxy.dev.mozaws.net/v2/extract"
-fathom_proxy = "https://metadata.dev.mozaws.net/"
+fathom_proxy = "https://metadata.dev.mozaws.net/v1/metadata"
 prod_proxy = "https://embedly-proxy.services.mozilla.com/v2/extract"
 
 def diff_objs(obj1, obj2):
