@@ -11,7 +11,7 @@ sys.setdefaultencoding('utf8')
 from pprint import pprint
 
 embedly_proxy = "https://embedly-proxy.dev.mozaws.net/v2/extract"
-fathom_proxy = "https://metadata.dev.mozaws.net/v1/metadata"
+fathom_proxy = "https://page-metadata-service.stage.mozaws.net/v1/metadata"
 prod_proxy = "https://embedly-proxy.services.mozilla.com/v2/extract"
 
 
